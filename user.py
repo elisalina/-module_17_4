@@ -61,11 +61,12 @@ async def update_user(db: Annotated[Session, Depends(get_db)],
 async def delete_user(db: Annotated[Session, Depends(get_db)],
                       user_id: int):
     user = db.scalars(select(User).where(User.id == user_id))
-    if user is not None:
-        db.execute(delete(User).where(User.id == user_id))
-        db.commit()
-        return {'status_code': status.HTTP_200_OK,
-                'transaction': 'User update is successful!'}
+    for u in user:
+        if user is not None:
+            db.execute(delete(User).where(User.id == user_id))
+            db.commit()
+            return {'status_code': status.HTTP_200_OK,
+                    'transaction': 'User update is successful!'}
     raise HTTPException(status_code=404, detail='User was not found')
 
 
