@@ -20,7 +20,7 @@ async def all_users(db: Annotated[Session, Depends(get_db)]):
 @router.get('/user_id')
 async def user_by_id(db: Annotated[Session, Depends(get_db)],
                      user_id: int):
-    user = db.scalars(select(User).where(User.id == user_id))
+    user = db.scalar(select(User).where(User.id == user_id))
     if user is not None:
         return user
     raise HTTPException(status_code=404, detail="User was not found")
@@ -42,7 +42,7 @@ async def create_user(db: Annotated[Session, Depends(get_db)],
 async def update_user(db: Annotated[Session, Depends(get_db)],
                       user_id: int,
                       user_update_model: UpdateUser):
-    user = db.scalars(select(User).where(User.id == user_id))
+    user = db.scalar(select(User).where(User.id == user_id))
     if user is not None:
         db.execute(update(User).where(User.id == user_id).values(
             username=user_update_model.username,
@@ -51,8 +51,8 @@ async def update_user(db: Annotated[Session, Depends(get_db)],
             age=user_update_model.age,
             slug=slugify(user_update_model.username)))
         db.commit()
-        return  {'status_code': status.HTTP_200_OK,
-                 'transaction': 'User update is successful!'}
+        return {'status_code': status.HTTP_200_OK,
+                'transaction': 'User update is successful!'}
     raise HTTPException(status_code=404, detail='User was not found')
 
 
